@@ -10,16 +10,17 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return MultiProvider(providers:
+    [ChangeNotifierProvider.value(
 
-      create: (BuildContext context)=> Products(),
+        value:  Products(),),],
       child: MaterialApp(
         title: 'MyShop',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           accentColor: Colors.orange
         ),
-        home:   const ProductOverviewScreen(),
+        home:   ProductOverviewScreen(),
         routes:{
           MyRoutes.productDetailRoute :(context)=>const ProductDetailScreen(),
         }
