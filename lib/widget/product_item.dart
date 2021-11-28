@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/providers/cart.dart';
 import 'package:shopping_app/providers/product.dart';
 
 import 'package:shopping_app/routes.dart';
@@ -16,12 +17,15 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   final prod =Provider.of<Product>(context,listen: false);
+    final prod = Provider.of<Product>(context, listen: false);
+
+    final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: GestureDetector(
-          onTap: (){
-            Navigator.of(context).pushNamed(MyRoutes.productDetailRoute,arguments: prod.id);
+          onTap: () {
+            Navigator.of(context)
+                .pushNamed(MyRoutes.productDetailRoute, arguments: prod.id);
           },
           child: GridTile(
             child: Image.network(
@@ -31,23 +35,29 @@ class ProductItem extends StatelessWidget {
             footer: GridTileBar(
               backgroundColor: Colors.black54,
               leading: Consumer<Product>(
-                builder: (BuildContext context, prod, _)=>IconButton(icon:  Icon(prod.isFavourite? Icons.favorite:Icons.favorite_border,), onPressed: () {
-
-                prod.toggleFavouriteStatus();
-              },),),
-              trailing: IconButton(icon: const Icon(Icons.shopping_bag), onPressed: () {  },),
-
+                builder: (BuildContext context, prod, _) => IconButton(
+                  icon: Icon(
+                    prod.isFavourite ? Icons.favorite : Icons.favorite_border,
+                  ),
+                  onPressed: () {
+                    prod.toggleFavouriteStatus();
+                  },
+                ),
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.shopping_bag),
+                onPressed: () {
+                  cart.addItem(prod.id, prod.title, prod.price);
+                },
+              ),
               title: Text(
                 prod.title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize:15   ),
+                style: const TextStyle(fontSize: 15),
               ),
             ),
             header: Text(prod.price.toString()),
           ),
         ));
-
-
-
   }
 }
