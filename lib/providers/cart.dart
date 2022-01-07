@@ -4,17 +4,16 @@ class CartItem {
   final String id;
   final String title;
   final double price;
-  final int quanity;
+  final int quantity;
 
-  CartItem(
-      {required this.id,
-      required this.price,
-      required this.title,
-      required this.quanity});
+  CartItem({required this.id,
+    required this.price,
+    required this.title,
+    required this.quantity});
 }
 
 class Cart with ChangeNotifier {
-  late final Map<String, CartItem> _items = {};
+  late Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
     return {..._items};
@@ -23,12 +22,11 @@ class Cart with ChangeNotifier {
   int get itemCount {
     return _items.length;
   }
-  double get totalAmount{
-    var total=0.0;
+
+  double get totalAmount {
+    double total = 0.0;
     _items.forEach((key, CartItem) {
-      total += CartItem.price * CartItem.quanity;
-
-
+      total += CartItem.price * CartItem.quantity;
     });
     return total;
   }
@@ -44,7 +42,7 @@ class Cart with ChangeNotifier {
                   id: existingCartItem.id,
                   price: price,
                   title: title,
-                  quanity: existingCartItem.quanity + 1));
+                  quantity: existingCartItem.quantity + 1));
     } else {
       _items.putIfAbsent(
           productId,
@@ -53,12 +51,32 @@ class Cart with ChangeNotifier {
                   id: DateTime.now().toString(),
                   price: price,
                   title: title,
-                  quanity: 1));
+                  quantity: 1));
     }
     notifyListeners();
   }
-  void removeItem(String productId){
+
+  void removeItem(String productId) {
     _items.remove(productId);
+    notifyListeners();
+  }
+
+  void removeSingleItem(String productId) {
+    if (_items[productId]!.quantity > 1) {
+      _items.update(productId, (existCartItem) =>
+          CartItem(id: existCartItem.id,
+              price: existCartItem.price,
+              title: existCartItem.title,
+              quantity: existCartItem.quantity-1));
+    }
+    else{
+      _items.remove(productId);
+    }
+    notifyListeners();
+  }
+
+  void clear() {
+    _items = {};
     notifyListeners();
   }
 

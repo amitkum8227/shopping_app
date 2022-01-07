@@ -35,19 +35,29 @@ class ProductItem extends StatelessWidget {
             footer: GridTileBar(
               backgroundColor: Colors.black54,
               leading: Consumer<Product>(
-                builder: (BuildContext context, prod, _) => IconButton(
-                  icon: Icon(
-                    prod.isFavourite ? Icons.favorite : Icons.favorite_border,
-                  ),
-                  onPressed: () {
-                    prod.toggleFavouriteStatus();
-                  },
-                ),
+                builder: (BuildContext context, prod, _) =>
+                    IconButton(
+                      icon: Icon(
+                        prod.isFavourite ? Icons.favorite : Icons
+                            .favorite_border,
+                      ),
+                      onPressed: () {
+                        prod.toggleFavouriteStatus();
+                      },
+                    ),
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.shopping_bag),
                 onPressed: () {
                   cart.addItem(prod.id, prod.title, prod.price);
+                  Scaffold.of(context).showSnackBar(
+                       SnackBar(content: const Text('item added ',),
+                      duration: const Duration(seconds: 2),
+                        action: SnackBarAction(label: 'UNDO', onPressed: (){
+                          cart.removeSingleItem(prod.id);
+                        },),
+                      ),
+                  );
                 },
               ),
               title: Text(
