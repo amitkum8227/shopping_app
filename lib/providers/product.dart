@@ -16,32 +16,44 @@ class Product with ChangeNotifier {
       required this.id,
       required this.imageUrl,
       this.isFavourite = false,
-      required this.price, isFavorite});
+      required this.price, });
 
- Future< void> toggleFavouriteStatus()async {
+  void _setFavValue(bool newValue) {
+    isFavourite = newValue;
+    notifyListeners();
+  }
+
+ Future< void> toggleFavouriteStatus( String token,String userId)async {
     final oldStatus=isFavourite;
     isFavourite = !isFavourite;
+    //print('hello');
     notifyListeners();
     final url = Uri.parse(
-        'https://shoppingapp-54bd1-default-rtdb.firebaseio.com/products/$id.json');
+        'https://shoppingapp-54bd1-default-rtdb.firebaseio.com/userFav/$userId/$id.json?auth=$token');
     try{
-     final response= await http.patch(url,body: json.encode({
-      'isFavourite': isFavourite
-      }));
+     final response= await http.put(url,body: json.encode({
+       isFavourite
+
+      })
+     );
      if(response.statusCode>=400){
-       isFavourite=oldStatus;
+       //isFavourite=oldStatus;
+       _setFavValue(oldStatus);
+       print('hello1');
        notifyListeners();
+
 
      }
     }
 
 
     catch(error){
-      isFavourite=oldStatus;
+      //isFavourite=oldStatus;
+      _setFavValue(oldStatus);
       notifyListeners();
 
     }
-
-
+    //print('hello3');
+notifyListeners();
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/Screens/auth_screen.dart';
 import 'package:shopping_app/Screens/cart_screen.dart';
+import 'package:shopping_app/providers/auth.dart';
+
 import '../Screens/edit_product_screen.dart';
 import 'package:shopping_app/Screens/orders_screen.dart';
 import 'package:shopping_app/Screens/product_detail_screen.dart';
@@ -19,32 +22,56 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (BuildContext context)=> Products(),
-        ),
-        ChangeNotifierProvider(
-          create: (BuildContext context)=>  Cart(),
-        ),
-        ChangeNotifierProvider(
-          create: (BuildContext context)=>  Orders(),
+        providers: [
+          ChangeNotifierProvider(
+            create: (BuildContext context) =>
+                Auth()
+            ,
+          ),
+
+          ChangeNotifierProxyProvider<Auth, Products>(
+            create: (_) => Products('', [],''),
+            update: (BuildContext context, auth, previousProduct,) =>
+                Products(auth.token!,
+                    previousProduct == null ? [] : previousProduct.items,auth.UserId!),
+
+
+          ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) => Cart(),
+          ),
+          ChangeNotifierProxyProvider<Auth, Orders>(
+           create: (_) => Orders('',[]),
+            update: (BuildContext context, auth, previousOrders) =>
+                Orders(auth.token!,
+                    previousOrders == null ? [] : previousOrders.orders),
+
+
+          ),
+
+        ],
+
+        child: Consumer<Auth>(builder: (BuildContext ctx, auth, _) =>
+            MaterialApp(
+
+              title: 'Window Shop',
+              theme:
+              ThemeData(primarySwatch: Colors.blue, accentColor: Colors.orange),
+
+              home: auth.isAuth ? ProductOverviewScreen() : AuthScreen(),
+              routes: {
+                MyRoutes.productDetailRoute: (
+                    context) => const ProductDetailScreen(),
+                MyRoutes.cartSreenRoute: (context) => const CartScreen(),
+                MyRoutes.OrderScreenRoute: (context) => const OrdersScreen(),
+                MyRoutes.userProductItemrouteName: (
+                    context) => const UserProductsScreen(),
+                MyRoutes.editScreenrouteName: (context) => EditProductScreen(),
+
+              },
+            )
+          ,
         )
-
-      ],
-      child: MaterialApp(
-        title: 'MyShop',
-        theme:
-            ThemeData(primarySwatch: Colors.blue, accentColor: Colors.orange),
-        home: ProductOverviewScreen(),
-        routes: {
-          MyRoutes.productDetailRoute: (context) => const ProductDetailScreen(),
-          MyRoutes.cartSreenRoute:(context)=> const CartScreen(),
-          MyRoutes.OrderScreenRoute:(context)=>const OrdersScreen(),
-          MyRoutes.userProductItemrouteName:(context)=>const UserProductsScreen(),
-          MyRoutes.editScreenrouteName:(context)=> EditProductScreen(),
-
-        },
-      ),
     );
   }
 }

@@ -77,7 +77,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           !_imageUrlController.text.startsWith('https')) ||
           (!_imageUrlController.text.endsWith('.png') &&
               !_imageUrlController.text.endsWith('.jpg') &&
-              !_imageUrlController.text.endsWith('.jpeg'))) {
+              !_imageUrlController.text.endsWith('.jpeg'))){
         return;
       }
       setState(() {});
@@ -176,7 +176,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       description: _editedProduct.description,
                       imageUrl: _editedProduct.imageUrl,
                       id: _editedProduct.id,
-                      isFavorite: _editedProduct.isFavourite);
+                      isFavourite: _editedProduct.isFavourite);
                 },
               ),
               TextFormField(
@@ -207,7 +207,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       description: _editedProduct.description,
                       imageUrl: _editedProduct.imageUrl,
                       id: _editedProduct.id,
-                      isFavorite: _editedProduct.isFavourite);
+                      isFavourite: _editedProduct.isFavourite);
                 },
               ),
               TextFormField(
@@ -232,7 +232,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     description: value!,
                     imageUrl: _editedProduct.imageUrl,
                     id: _editedProduct.id,
-                    isFavorite: _editedProduct.isFavourite,
+                    isFavourite: _editedProduct.isFavourite,
                   );
                 },
               ),
@@ -292,7 +292,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           description: _editedProduct.description,
                           imageUrl: value!,
                           id: _editedProduct.id,
-                          isFavorite: _editedProduct.isFavourite,
+                          isFavourite: _editedProduct.isFavourite,
                         );
                       },
                     ),
