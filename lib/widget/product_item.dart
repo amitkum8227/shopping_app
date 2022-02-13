@@ -44,7 +44,7 @@ class ProductItem extends StatelessWidget {
                             .favorite_border,
                       ),
                       onPressed: () {
-                        prod.toggleFavouriteStatus(auth.token!,auth.UserId!);
+                        prod.toggleFavouriteStatus(auth.token!,auth.userId!);
                       },
                     ),
               ),
