@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/Model/httpException.dart';
 
 class Auth with ChangeNotifier {
@@ -48,11 +49,15 @@ class Auth with ChangeNotifier {
       _expiryDate=DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn'])));
       autoLogout();
       notifyListeners();
+      final prefs= await SharedPreferences.getInstance();
+      final userData=json.encode({'token':_token,'userId':userId,'expiryDate':_expiryDate!.toIso8601String()});
+      prefs.setString('userData',userData);
+
     }
     catch(error){
       throw error;
     }
-    //print(response.body);
+
   }
 
   Future<void> signUp(String email, String password) async {
@@ -63,8 +68,41 @@ class Auth with ChangeNotifier {
   {
     return _authenticate(email,password,'signInWithPassword');
   }
+  Future<bool>tryAutoLogin()async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      print('hello');
+      return false;
+    }
+    try {
+      final extractedUserData = json.decode(
+          prefs.getString('userData')!) as Map<String, dynamic>;
 
-  void logOut(){
+      final expiryDate = DateTime.parse(
+          extractedUserData['expiryDate'] as String);
+      if (expiryDate.isBefore(DateTime.now())) {
+        print('hello1');
+        return false;
+      }
+      _token = extractedUserData['token'] as String;
+      _userId = extractedUserData['userId'] as String;
+      _expiryDate = expiryDate;
+
+      notifyListeners();
+      autoLogout();
+      print('hello3');
+      return true;
+    }
+    catch(error){
+      print(error);
+      throw error;
+
+    }
+  }
+
+
+
+  Future<void> logOut() async{
     _token=null;
     _userId=null;
     _expiryDate=null;
@@ -73,6 +111,8 @@ class Auth with ChangeNotifier {
       authTimer=null;
     }
     notifyListeners();
+    final prefs= await SharedPreferences.getInstance();
+    prefs.clear();
   }
   void autoLogout(){
     if(authTimer !=null){

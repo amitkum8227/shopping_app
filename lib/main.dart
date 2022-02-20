@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/Screens/auth_screen.dart';
 import 'package:shopping_app/Screens/cart_screen.dart';
+import 'package:shopping_app/Screens/splash.dart';
 import 'package:shopping_app/providers/auth.dart';
 
 import '../Screens/edit_product_screen.dart';
@@ -23,8 +24,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (BuildContext context) =>
+          ChangeNotifierProvider.value(
+            value:
                 Auth()
             ,
           ),
@@ -37,8 +38,8 @@ class MyApp extends StatelessWidget {
 
 
           ),
-          ChangeNotifierProvider(
-            create: (BuildContext context) => Cart(),
+          ChangeNotifierProvider.value(
+            value: Cart(),
           ),
           ChangeNotifierProxyProvider<Auth, Orders>(
            create: (_) => Orders('',[],''),
@@ -56,19 +57,24 @@ class MyApp extends StatelessWidget {
 
               title: 'Window Shop',
               theme:
-              ThemeData(primarySwatch: Colors.blue, accentColor: Colors.orange),
+              ThemeData(
+                  primarySwatch: Colors.blue, accentColor: Colors.orange),
 
-              home: auth.isAuth ? ProductOverviewScreen() : AuthScreen(),
+              home: auth.isAuth ? ProductOverviewScreen() : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                  authResultSnapshot.connectionState == ConnectionState.waiting
+                      ? SplashScreen():AuthScreen()),
               routes: {
-                MyRoutes.productDetailRoute: (
-                    context) => const ProductDetailScreen(),
-                MyRoutes.cartSreenRoute: (context) => const CartScreen(),
-                MyRoutes.OrderScreenRoute: (context) => const OrdersScreen(),
-                MyRoutes.userProductItemrouteName: (
-                    context) => const UserProductsScreen(),
-                MyRoutes.editScreenrouteName: (context) => EditProductScreen(),
+            MyRoutes.productDetailRoute: (
+            context) => const ProductDetailScreen(),
+            MyRoutes.cartSreenRoute: (context) => const CartScreen(),
+            MyRoutes.OrderScreenRoute: (context) => const OrdersScreen(),
+            MyRoutes.userProductItemrouteName: (
+            context) => const UserProductsScreen(),
+            MyRoutes.editScreenrouteName: (context) => EditProductScreen(),
 
-              },
+            },
             )
           ,
         )

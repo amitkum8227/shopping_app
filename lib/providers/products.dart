@@ -41,8 +41,8 @@ class Products extends ChangeNotifier {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     ),*/
   ];
-   final String authToken;
-   final String userId;
+     String? authToken;
+     String? userId;
 
    Products(this.authToken,this._items,this.userId);
 
@@ -83,11 +83,11 @@ class Products extends ChangeNotifier {
         price: prodData['price'],
         imageUrl: prodData['imageUrl'],
         //isFavourite: favData==null? false: favData[prodId] ?? false,
-        isFavourite: favData == null
+    /*    isFavourite: *//*favData == null
             ? false
-            : favData[prodId] == null
+            :*//* favData[prodId] == null
             ? false
-            : favData[prodId]['isFavourite'],
+            : favData[prodId]['isFavourite'],*/
         
       ));
 

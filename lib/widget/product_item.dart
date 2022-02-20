@@ -40,7 +40,8 @@ class ProductItem extends StatelessWidget {
                 builder: (BuildContext context, prod, _) =>
                     IconButton(
                       icon: Icon(
-                        prod.isFavourite ? Icons.favorite : Icons
+
+                        prod.isFavourite ? Icons.favorite: Icons
                             .favorite_border,
                       ),
                       onPressed: () {

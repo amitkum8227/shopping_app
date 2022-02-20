@@ -23,7 +23,7 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
- Future< void> toggleFavouriteStatus( String token,String userId)async {
+ Future< void> toggleFavouriteStatus( String? token,String?  userId)async {
     final oldStatus=isFavourite;
     isFavourite = !isFavourite;
     //print('hello');
@@ -32,13 +32,15 @@ class Product with ChangeNotifier {
         'https://shoppingapp-54bd1-default-rtdb.firebaseio.com/userFav/$userId/$id.json?auth=$token');
     try{
      final response= await http.put(url,body: json.encode({
-       isFavourite
+       '$id': isFavourite.toString(),
 
       })
+
      );
+     notifyListeners();
      if(response.statusCode>=400){
-       //isFavourite=oldStatus;
-       _setFavValue(oldStatus);
+       isFavourite=oldStatus;
+       //_setFavValue(oldStatus);
        print('hello1');
        notifyListeners();
 
@@ -48,12 +50,13 @@ class Product with ChangeNotifier {
 
 
     catch(error){
-      //isFavourite=oldStatus;
-      _setFavValue(oldStatus);
-      notifyListeners();
+      isFavourite=oldStatus;
+      //_setFavValue(oldStatus);
+      print(error);
+
 
     }
     //print('hello3');
-notifyListeners();
+
   }
 }
